@@ -32,27 +32,29 @@ const promptManager = () =>{
         type: 'input',
         name: 'manEmail',
         message: "What is the team manager's email?",
-        validate: nameInput => {
-            if (nameInput) {
-                return true;
-            } else {
-                console.log("Please enter the manager's email!");
-                return false;
-            }
+        validate: email => {
+
+            // Regex mail check (return true if valid mail)
+            return /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()\.,;\s@\"]+\.{0,1})+([^<>()\.,;:\s@\"]{2,}|[\d\.]+))$/.test(email);
         }
+
      },
      {
         type: 'input',
         name: 'manNum',
         message: "What is the team manager's office number?",
-        validate: nameInput => {
-            if (nameInput) {
-                return true;
-            } else {
-                console.log("Please enter the manager's number!");
-                return false;
+        validate:  value => {
+
+            // regex phone # check
+            let pass = value.match(
+              /^([01]{1})?[-.\s]?\(?(\d{3})\)?[-.\s]?(\d{3})[-.\s]?(\d{4})\s?((?:#|ext\.?\s?|x\.?\s?){1}(?:\d+)?)?$/i
+            );
+            if (pass) {
+              return true;
             }
-        }
+      
+            return 'Please enter a valid phone number';
+          },
      },
  ])
 }
@@ -109,14 +111,11 @@ const promptEngineer = () =>{
            type: 'input',
            name: 'engEmail',
            message: "What is the engineer's email?",
-           validate: nameInput => {
-               if (nameInput) {
-                   return true;
-               } else {
-                   console.log("Please enter the engineer's email!");
-                   return false;
-               }
-           }
+           validate: email => {
+
+            // Regex mail check (return true if valid mail)
+            return /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()\.,;\s@\"]+\.{0,1})+([^<>()\.,;:\s@\"]{2,}|[\d\.]+))$/.test(email);
+            }
         },
         {
            type: 'input',
@@ -166,14 +165,11 @@ const promptEngineer = () =>{
            type: 'input',
            name: 'intEmail',
            message: "What is the intern's email?",
-           validate: nameInput => {
-               if (nameInput) {
-                   return true;
-               } else {
-                   console.log("Please enter the intern's email!");
-                   return false;
-               }
-           }
+           validate: email => {
+
+            // Regex mail check (return true if valid mail)
+            return /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()\.,;\s@\"]+\.{0,1})+([^<>()\.,;:\s@\"]{2,}|[\d\.]+))$/.test(email);
+            }
         },
         {
            type: 'input',
@@ -193,13 +189,4 @@ const promptEngineer = () =>{
 
    promptManager()
     .then(promptNewEmployee)
-    .then(newEmployeeType = () =>{
-        // if(promptNewEmployee.choices === 'Engineer'){
-        //         return promptEngineer();
-        //     }else if(promptNewEmployee.choices === 'Intern'){
-        //         return promptIntern();
-        //     }else{
-        //         return 'Thanks!'
-        //     }
-    })
-        
+    
