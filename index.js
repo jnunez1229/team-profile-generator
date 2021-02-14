@@ -1,4 +1,7 @@
 const inquirer = require('inquirer');
+const Manager = require('./lib/Manager.js')
+const Engineer = require('./lib/Engineer.js')
+const Intern = require('./lib/Intern.js')
 
 const promptManager = () =>{
  return inquirer.prompt([
@@ -61,7 +64,7 @@ const promptManager = () =>{
           },
      },
  ]).then(data =>
-    console.log(data));
+    new Manager(data.name, data.id, data.email, data.number));
 }
 
 const promptNewEmployee = () =>{
@@ -141,7 +144,7 @@ const promptEngineer = () =>{
            }
         },
     ]).then(promptNewEmployee).then(data =>
-        console.log(data));
+        new Engineer(data));
    }
 
    const promptIntern = () =>{
@@ -201,7 +204,7 @@ const promptEngineer = () =>{
            }
         },
     ]).then(promptNewEmployee).then(data =>
-        console.log(data));
+        new Intern(data));
    }
 
    promptManager()
