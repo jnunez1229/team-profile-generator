@@ -143,8 +143,9 @@ const promptEngineer = () =>{
                }
            }
         },
-    ]).then(promptNewEmployee).then(data =>
-        new Engineer(data));
+    ]).then(promptNewEmployee)
+        .then(data =>
+            new Engineer(data.name, data.id, data.email, data.github));
    }
 
    const promptIntern = () =>{
@@ -203,8 +204,9 @@ const promptEngineer = () =>{
                }
            }
         },
-    ]).then(promptNewEmployee).then(data =>
-        new Intern(data));
+    ]).then(promptNewEmployee)
+        .then(data =>
+            new Intern(data.name, data.id, data.email, data.school));
    }
 
    promptManager()
