@@ -144,9 +144,9 @@ async function newMember(){
             newMember()
         }else{
 
-            writeFile('./dist/index.html', generateHTML(team));
-          
-            copyFile();
+            writeFile('./dist/index.html', generateHTML(team))
+            copyFile()
+            .then( response => console.log(response.message))
          
             }
         })

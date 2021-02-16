@@ -10,7 +10,7 @@ function writeFile(destination, text){
         }
         resolve({
           ok: true,
-          message: `File '${destination.slice(7)}' Created!`
+          message: `The HTML file is created!`
         })
       })
     })
@@ -27,7 +27,7 @@ const copyFile = () => {
   
         resolve({
           ok: true,
-          message: 'Stylesheet created!'
+          message: 'The files have been created! Please check in the dist folder to see them'
         });
       });
     });

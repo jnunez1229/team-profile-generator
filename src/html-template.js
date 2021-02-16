@@ -7,15 +7,15 @@ function generateTeam(teamArr){
         let icon;
         switch(role){
             case `Manager`:
-                info = `<li>Office number: ${number}</li>`
+                info = `<li class="list-group-item">Office number: ${number}</li>`
                 icon = `<i class="fas fa-tasks"></i>`
                 break;
             case `Engineer`:
-                info = `<li>Github: <a href="https://github.com/${github}" target="_blank">${github}</a></li>`
-                icon = `<i class="fas fa-code-branch">`
+                info = `<li class="list-group-item">Github: <a href="https://github.com/${github}" target="_blank">${github}</a></li>`
+                icon = `<i class="fas fa-code-branch"></i>`
                 break;
             case `Intern`:
-                info = `<li>School: ${school}</li>`
+                info = `<li class="list-group-item">School: ${school}</li>`
                 icon = `<i class="fas fa-graduation-cap"></i>`
                 break;
         }

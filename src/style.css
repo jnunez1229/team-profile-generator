@@ -8,6 +8,10 @@ header{
     height: 60px;
 }
 
+.row{
+    margin-top: 20px;
+}
+
 .card{
     box-shadow: -8px 11px 3px 5px rgb(117 113 113)
 }
