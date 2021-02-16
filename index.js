@@ -1,19 +1,28 @@
 const inquirer = require('inquirer');
-const Manager = require('./lib/Manager.js')
-const Engineer = require('./lib/Engineer.js')
-const Intern = require('./lib/Intern.js')
+const Manager = require('./lib/Manager.js');
+const Engineer = require('./lib/Engineer.js');
+const Intern = require('./lib/Intern.js');
+const generateHTML = require('./src/html-template.js');
+const { writeFile, copyFile } = require('./utils/generate-page.js');
 
-const promptManager = () =>{
- return inquirer.prompt([
+const team = [];
+
+async function newMember(){
+    await inquirer.prompt([
+     {
+        type: 'list', 
+        name: 'role',
+        choices: ['Manager', 'Engineer', 'Intern'],
+     },
      {
         type: 'input',
         name: 'name',
-        message: "What is the team manager's name? (Required)",
+        message: "What is your name?",
         validate: nameInput => {
             if (nameInput) {
                 return true;
             } else {
-                console.log("Please enter the manager's name!");
+                console.log("Please enter your name");
                 return false;
             }
         }
@@ -21,12 +30,12 @@ const promptManager = () =>{
      {
         type: 'input',
         name: 'id',
-        message: "What is the team manager's id?",
+        message: "What is your ID number?",
         validate: nameInput => {
             if (nameInput) {
                 return true;
             } else {
-                console.log("Please enter the manager's id!");
+                console.log("Please enter your ID");
                 return false;
             }
         }
@@ -34,7 +43,7 @@ const promptManager = () =>{
      {
         type: 'input',
         name: 'email',
-        message: "What is the team manager's email?",
+        message: "What is your email?",
         validate: value => {
 
             // Regex mail check (return true if valid mail)
@@ -46,6 +55,7 @@ const promptManager = () =>{
             return 'Please enter a valid email Address';
         },
      },
+    //  If Manager is chosen
      {
         type: 'input',
         name: 'number',
@@ -61,155 +71,86 @@ const promptManager = () =>{
             }
       
             return 'Please enter a valid phone number';
-          },
-     },
- ]).then(data =>
-    new Manager(data.name, data.id, data.email, data.number));
-}
-
-const promptNewEmployee = () =>{
-    return inquirer.prompt(
-        {
-           type: 'list',
-           name: 'newEmployee',
-           message: 'Which type of team member would you like to add?',
-           choices:['Engineer', 'Intern', 'I am done adding employees'],
-        }
-    ).then(answer => {
-            if(answer.newEmployee === "Engineer"){
-                return promptEngineer()
-            } else if(answer.newEmployee === "Intern"){
-                return promptIntern()
-            }else{
-                return console.log('All done!');
+        },
+        when: function({role}){
+            if(role === `Manager`){
+                return true
+            } else{
+                return false
             }
+        } 
+     },
+    //  If Engineer is chosen
+     {
+        type: 'input',
+        name: 'github',
+        message: "What is your github username?",
+        validate: nameInput => {
+            if (nameInput) {
+                return true;
+            } else {
+                console.log("Please enter your github username");
+                return false;
+            }
+        },
+        when: function({role}){
+            if(role === `Engineer`){
+                return true
+            } else{
+                return false
+            }
+        } 
+    },
+    // If Intern is chosen
+    {
+        type: 'input',
+        name: 'school',
+        message: "What is your Intern's school?",
+        validate: school => {
+            if (school) {
+                return true;
+            } else {
+                console.log("Please enter your Intern's school!");
+                return false;
+            }
+        },
+        when: function({role}){
+            if(role === `Intern`){
+                return true
+            } else{
+                return false
+            }
+        } 
+    }
+ ]).then(answers =>{
+     const{name, id, email} = answers;
+     if(answers.role === 'Manager'){
+        team.push(new Manager(name, id, email, answers.number));
+    } else if(answers.role === 'Engineer'){
+        team.push(new Engineer(name, id, email, answers.github));  
+    } else if(answers.role === 'Intern'){
+        team.push(new Intern(name, id, email, answers.school));  
+    }
+    inquirer.prompt([
+        {
+            type: 'confirm',
+            name: 'newMember',
+            message: 'Add another member?',
+            default: false
+        }            
+    ])
+    .then(ans=>{
+        if(ans.newMember){
+            newMember()
+        }else{
 
+            writeFile('./dist/index.html', generateHTML(team));
+          
+            copyFile();
+         
+            }
+        })
     })
 }
 
-const promptEngineer = () =>{
-    return inquirer.prompt([
-        {
-           type: 'input',
-           name: 'name',
-           message: "What is the Engineer's name?",
-           validate: nameInput => {
-               if (nameInput) {
-                   return true;
-               } else {
-                   console.log("Please enter the Engineer's name!");
-                   return false;
-               }
-           }
-        },
-        {
-           type: 'input',
-           name: 'id',
-           message: "What is the Engineer's id?",
-           validate: nameInput => {
-               if (nameInput) {
-                   return true;
-               } else {
-                   console.log("Please enter the Engineer's id!");
-                   return false;
-               }
-           }
-        },
-        {
-           type: 'input',
-           name: 'email',
-           message: "What is the Engineer's email?",
-           validate: value => {
-
-            // Regex mail check (return true if valid mail)
-            let pass = value.match(/^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()\.,;\s@\"]+\.{0,1})+([^<>()\.,;:\s@\"]{2,}|[\d\.]+))$/) 
-            if (pass) {
-                return true;
-            }
-        
-            return 'Please enter a valid email Address';
-        },
-        },
-        {
-           type: 'input',
-           name: 'github',
-           message: "What is the Engineer's github username?",
-           validate: nameInput => {
-               if (nameInput) {
-                   return true;
-               } else {
-                   console.log("Please enter the Engineer's github username!");
-                   return false;
-               }
-           }
-        },
-    ]).then(promptNewEmployee)
-        .then(data =>
-            new Engineer(data.name, data.id, data.email, data.github));
-   }
-
-   const promptIntern = () =>{
-    return inquirer.prompt([
-        {
-           type: 'input',
-           name: 'name',
-           message: "What is the Intern's name?",
-           validate: nameInput => {
-               if (nameInput) {
-                   return true;
-               } else {
-                   console.log("Please enter the intern's name!");
-                   return false;
-               }
-           }
-        },
-        {
-           type: 'input',
-           name: 'id',
-           message: "What is the Intern's id?",
-           validate: nameInput => {
-               if (nameInput) {
-                   return true;
-               } else {
-                   console.log("Please enter the Intern's id!");
-                   return false;
-               }
-           }
-        },
-        {
-           type: 'input',
-           name: 'email',
-           message: "What is the Intern's email?",
-           validate: value => {
-
-            // Regex mail check (return true if valid mail)
-            let pass = value.match(/^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()\.,;\s@\"]+\.{0,1})+([^<>()\.,;:\s@\"]{2,}|[\d\.]+))$/) 
-            if (pass) {
-                return true;
-            }
-        
-            return 'Please enter a valid email Address';
-        },
-        },
-        {
-           type: 'input',
-           name: 'school',
-           message: "What is your Intern's school?",
-           validate: school => {
-               if (school) {
-                   return true;
-               } else {
-                   console.log("Please enter your Intern's school!");
-                   return false;
-               }
-           }
-        },
-    ]).then(promptNewEmployee)
-        .then(data =>
-            new Intern(data.name, data.id, data.email, data.school));
-   }
-
-   promptManager()
-    .then(promptNewEmployee)
-    
-    
+ newMember()
