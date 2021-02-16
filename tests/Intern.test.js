@@ -9,4 +9,9 @@ test('creates employee object', () => {
     expect(intern.email).toEqual(expect.any(String));
     expect(intern.school).toEqual(expect.any(String));
     expect(intern.role).toEqual('Intern');
+    expect(intern.getName()).toEqual(intern.name)
+    expect(intern.getId()).toEqual(intern.id)
+    expect(intern.getEmail()).toEqual(intern.email)
+    expect(intern.getRole()).toEqual(intern.role)
+    expect(intern.getSchool()).toEqual(intern.school)
 });
